@@ -1,0 +1,11 @@
+.search__btn {
+    position: absolute;
+    top: 0;
+    right: 0.5rem;
+}
+
+.movie__search {
+    margin: 0;
+    /*margin-top: 2rem;*/
+    /*margin-bottom: 0;*/
+}
