@@ -1,19 +1,15 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import './radio.css'
 
-export default class Radio extends Component {
-    state = {
-        genre: ''
-    }
+const Radio = (props) => {
+    const {toPutTypeToSearch} = props;
+    const [genre, setGenre] = useState('');
 
-    onChangeRadio = (event) => {
-        const {toPutTypeToSearch} = this.props;
-        const {name, value} = event.target;
+    const onChangeRadio = (event) => {
+        const {value} = event.target;
         let valueToState = value;
 
-        this.setState({
-            [name]: valueToState
-        });
+        setGenre(valueToState);
 
         let type = value;
         if (value === 'all') type = null;
@@ -21,17 +17,15 @@ export default class Radio extends Component {
         toPutTypeToSearch(type);
     };
 
-    render() {
-        const {genre} = this.state
-
-        return(
-            <View
-                genre={genre}
-                onChangeRadio={this.onChangeRadio}
-            />
-        )
-    }
+    return(
+        <View
+            genre={genre}
+            onChangeRadio={onChangeRadio}
+        />
+    )
 }
+
+export default Radio;
 
 const View = ({genre, onChangeRadio}) => {
     return(

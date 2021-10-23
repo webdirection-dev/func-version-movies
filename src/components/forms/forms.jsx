@@ -1,25 +1,23 @@
-import React, {Component} from "react";
 import Search from "../search";
 import Radio from "../radio";
 
-export default class Forms extends Component {
-    state = {
-        test: null,
-        focus: true
-    }
-
-    render() {
-        const {toPutNameToSearch, toPutTypeToSearch, toSearch} = this.props
-        return(
-            <>
-                <Search
-                    toPutNameToSearch={toPutNameToSearch}
-                    toSearch={toSearch}
-                />
-                <Radio
-                    toPutTypeToSearch={toPutTypeToSearch}
-                />
-            </>
-        )
-    }
+const Forms = (props) => {
+    const {
+        toPutNameToSearch = Function.prototype,
+        toSearch = Function.prototype,
+        toPutTypeToSearch = Function.prototype,
+    } = props;
+    return(
+        <>
+            <Search
+                toPutNameToSearch={toPutNameToSearch}
+                toSearch={toSearch}
+            />
+            <Radio
+                toPutTypeToSearch={toPutTypeToSearch}
+            />
+        </>
+    )
 }
+
+export default Forms;

@@ -1,22 +1,21 @@
-import React, {Component} from "react";
 import './moviesList.css';
 // import MovieItem from "../movieItem";
 import Preloader from "../preloader/preloader";
 
-export default class MoviesList extends Component{
-    render() {
-        // По умолчанию moviesList = [] для того чтобы отрисовывать <h4>Nothing found</h4>
-        const {moviesList = []} = this.props;
+const MoviesList = (props) => {
+    // По умолчанию moviesList = [] для того чтобы отрисовывать <h4>Nothing found</h4>
+    const {moviesList = []} = props;
 
-        if (!moviesList) return <Preloader/>;
+    if (!moviesList) return <Preloader/>;
 
-        return(
-            <div className='moviesList'>
-                {moviesList.length ? View(moviesList) : <h4>Nothing found</h4>}
-            </div>
-        )
-    }
+    return(
+        <div className='moviesList'>
+            {moviesList.length ? View(moviesList) : <h4>Nothing found</h4>}
+        </div>
+    )
 };
+
+export default MoviesList;
 
 const View = (moviesList) => {
     return(

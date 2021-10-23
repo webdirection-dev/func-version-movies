@@ -1,43 +1,22 @@
-import React, {Component} from "react";
+import React, {useEffect, useState} from "react";
 import Forms from "../components/forms";
 import MoviesList from "../components/moviesList";
 import Preloader from "../components/preloader/preloader";
 import './layout.css';
 import MoviesService from "../services/movies-service";
 
-export default class Main extends Component {
-    constructor(props) {
-        super(props);
+const getData = new MoviesService();
 
-        this.state = {
-            loading: true,
-            moviesList: null,
-            nameForURL: 'all',
-            typeForURL: null
-        }
+const Main = () => {
+    const [loading, setLoading] = useState(true);
+    const [moviesList, setMoviesList] = useState(null);
+    const [nameForURL, setNameForURL] = useState('all');
+    const [typeForURL, setTypeForURL] = useState(null);
 
-        this.toSearch = this.toSearch.bind(this);
-        this.toPutNameToSearch = this.toPutNameToSearch.bind(this);
-        this.toPutTypeToSearch = this.toPutTypeToSearch.bind(this);
-    }
-
-    getData = new MoviesService();
-
-    componentDidMount() {
-        const {nameForURL, typeForURL} = this.state;
-        this.dataForMovies(nameForURL, typeForURL)
-
-        this.setState({
-            loading: false
-        })
-    }
-
-    dataForMovies = (name, type) => {
-        this.getData.getMoviesList(name, type)
+    const dataForMovies = (name, type) => {
+        getData.getMoviesList(name, type)
             .then(response => {
-                this.setState({
-                    moviesList: response.Search
-                })
+                setMoviesList(response.Search);
             })
             .catch(error => {
                 console.error(error);
@@ -48,84 +27,55 @@ export default class Main extends Component {
             });
     }
 
-    // Записать в state название фильма из строки поиска для формирования запроса get
-    // Берет Тип фильма из State а название из Компонента Search из строки поиска
-    // Вызывает функцию dataForMovies для обработки запроса get
-    toPutNameToSearch(url) {
-        this.setState({
-            loading: true
-        })
+    const toPutNameToSearch = url => {
+        setLoading(true);
+        setNameForURL(url);
 
-        const {typeForURL} = this.state;
+        dataForMovies(url, typeForURL)
 
-        this.setState({
-            nameForURL: url
-        })
-
-        this.dataForMovies(url, typeForURL)
-
-        this.setState({
-            loading: false
-        })
+        setLoading(false);
     }
 
-    // Записать в state тип фильма из строки поиска для формирования запроса get
-    // Берет Тип название из State а тип из Компонента Radio из строки поиска
-    // Вызывает функцию dataForMovies для обработки запроса get
-    toPutTypeToSearch(type) {
-        this.setState({
-            loading: true
-        })
+    const toPutTypeToSearch = type => {
+        setLoading(true);
+        setTypeForURL(type);
 
-        const {nameForURL} = this.state;
+        dataForMovies(nameForURL, type)
 
-        this.setState({
-            typeForURL: type
-        })
-
-        this.dataForMovies(nameForURL, type)
-
-        this.setState({
-            loading: false
-        })
+        setLoading(false);
     }
 
-    // Вызовет dataForMovies при нажатии кнопки Search или нажатии клавиши Enter
-    // По сути бесполезный метод тк toPutTypeToSearch и toPutNameToSearch делает это автоматически
-    toSearch() {
-        this.setState({
-            loading: true
-        })
+    const toSearch = () => {
+        setLoading(true);
 
-        const {nameForURL, typeForURL} = this.state;
-        this.dataForMovies(nameForURL, typeForURL);
+        dataForMovies(nameForURL, typeForURL);
 
-        this.setState({
-            loading: false
-        })
+        setLoading(false);
     }
 
-    render() {
-        const {loading, moviesList} = this.state;
+    // componentDidMount
+    useEffect(() => {
+        dataForMovies(nameForURL, typeForURL);
+        setLoading(false)
+    }, [nameForURL, typeForURL]);
 
-        return(
-            <>
-                <main className='container content'>
-                    <div className="main__preloader">
-                        {loading ? <Preloader/> : null}
-                    </div>
+    return(
+        <main className='container content'>
+            <div className="main__preloader">
+                {loading ? <Preloader/> : null}
+            </div>
 
-                    <Forms
-                        toPutNameToSearch={this.toPutNameToSearch}
-                        toPutTypeToSearch={this.toPutTypeToSearch}
-                        toSearch={this.toSearch}
-                    />
+            <Forms
+                toPutNameToSearch={toPutNameToSearch}
+                toPutTypeToSearch={toPutTypeToSearch}
+                toSearch={toSearch}
+            />
 
-                    {
-                        loading ? <Preloader /> : <MoviesList moviesList={moviesList}/>
-                    }
-                </main>
-            </>
-        )
-    }
+            {
+                loading ? <Preloader /> : <MoviesList moviesList={moviesList}/>
+            }
+        </main>
+    )
 };
+
+export default Main;

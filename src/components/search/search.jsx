@@ -1,31 +1,18 @@
-import React, {Component} from "react";
-import './search.css'
+import React, {useEffect, useState} from "react";
+import './search.css';
 
-export default class Search extends Component {
-    constructor(props) {
-        super(props);
+const focusRef = React.createRef();
 
-        this.state = {
-            search: ''
-        }
+const Search = (props) => {
+    const {toPutNameToSearch, toSearch} = props;
 
-        this.focusRef = React.createRef();
-    }
+    const [search, setSearch] = useState('');
 
-    componentDidMount() {
-        // фокус в строке поиска при отрисовке компонента
-        this.focusRef.current.focus();
-    }
-
-    onSearch = (event) => {
-        const {toPutNameToSearch} = this.props;
-
+    const onSearch = (event) => {
         // получаем данные из импута
         const {value} = event.target;
 
-        this.setState({
-            search: value
-        })
+        setSearch(value);
 
         let type = value;
         if (value === '') type = 'all';
@@ -33,29 +20,31 @@ export default class Search extends Component {
         toPutNameToSearch(type)
     }
 
-    onPushEnter = (event) => {
+    const onPushEnter = (event) => {
         // получить код нажатой клавиши
         const {code} = event;
         const buttonClick = event.target.nodeName;
 
-        const {toSearch} = this.props;
-
         if (code === 'Enter' || buttonClick === 'BUTTON') toSearch();
     }
 
-    render() {
-        const {search} = this.state;
+    // componentDidMount
+    useEffect(() => {
+        // фокус в строке поиска при отрисовке компонента
+        focusRef.current.focus();
+    });
 
-        return(
-            <View
-                search={search}
-                onSearch={this.onSearch}
-                onPushEnter={this.onPushEnter}
-                focusRef={this.focusRef}
-            />
-        )
-    }
+    return(
+        <View
+            search={search}
+            onSearch={onSearch}
+            onPushEnter={onPushEnter}
+            focusRef={focusRef}
+        />
+    )
 }
+
+export default Search;
 
 const View = ({search, onSearch, onPushEnter, focusRef}) => {
     return(
